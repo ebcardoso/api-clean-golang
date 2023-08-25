@@ -1,0 +1,48 @@
+auth:
+  protector:
+    not_auth: "User not authenticated"
+    token_required: "Token is required"
+  signup:
+    success : 'User registered successfully'
+    errors:
+      already_exists: 'This :email already exists'
+      password_different: "Params :password and :password_confirmation don't match"
+      save_user: 'Failure to register user'
+  signin:
+    success: 'User authenticated succesfully'
+    invalid: 'User or password invalid'
+    user_blocked: 'User is blocked'
+  forgot_password_token:
+    success: 'A token was sent by email to reset the password'
+    errors:
+      default: 'Failure to generate token'
+  reset_password_confirm:
+    success: 'Password reset successfully'
+    errors:
+      invalid_token: 'Token invalid'
+      default: 'Failure to reset password'
+users:
+  errors:
+    not_found: 'User not found'
+  list:
+    errors: 'Error to list users'
+  fetch:
+    errors: 'Error to fetch users'
+  load:
+    errors: 'Error to load user'
+  create:
+    errors: 'Error to create user'
+  update:
+    errors: 'Error to update user'
+  destroy:
+    success: 'User deleted successfully'
+    errors: 'Error to delete user'
+  block:
+    success: 'User blocked successfully'
+    errors: 'Error to block user'
+  unblock:
+    success: 'User unblocked successfully'
+    errors: 'Error to unblock user'
+errors:
+  invalid_params: 'Invalid Params'
+  parse_id: 'Invalid param id'
