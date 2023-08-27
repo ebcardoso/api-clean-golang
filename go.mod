@@ -10,6 +10,7 @@ require (
 
 require (
 	github.com/caarlos0/env v3.5.0+incompatible
+	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/joho/godotenv v1.5.1
 	github.com/klauspost/compress v1.13.6 // indirect

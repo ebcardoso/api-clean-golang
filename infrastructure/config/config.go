@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/ebcardoso/api-clean-golang/infrastructure/database"
+	"github.com/ebcardoso/api-clean-golang/infrastructure/exceptions"
 	"github.com/ebcardoso/api-clean-golang/infrastructure/translations"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -10,6 +11,7 @@ type Config struct {
 	Env          *Env
 	Database     *mongo.Database
 	Translations *translations.Translations
+	Exceptions   *exceptions.Exceptions
 }
 
 func SetConfigs(file string) (*Config, error) {
@@ -31,10 +33,14 @@ func SetConfigs(file string) (*Config, error) {
 		return &Config{}, err
 	}
 
+	//Loading Exceptions
+	exceptions := exceptions.NewExceptions(translations)
+
 	c := &Config{
 		Env:          env,
 		Database:     db,
 		Translations: translations,
+		Exceptions:   exceptions,
 	}
 	return c, nil
 }
