@@ -12,6 +12,9 @@ type Exceptions struct {
 	ErrDifferentPassword error
 	ErrUserAlreadyExists error
 	ErrSaveUser          error
+	ErrForgotPassword    error
+	ErrResetPassword     error
+	ErrInvalidToken      error
 
 	//Users
 	ErrUserNotFound  error
@@ -33,6 +36,9 @@ func NewExceptions(translations *translations.Translations) *Exceptions {
 		ErrDifferentPassword: errors.New(translations.Auth.Signup.Errors.PasswordDifferent),
 		ErrUserAlreadyExists: errors.New(translations.Auth.Signup.Errors.AlreadyExists),
 		ErrSaveUser:          errors.New(translations.Auth.Signup.Errors.SaveUser),
+		ErrForgotPassword:    errors.New(translations.Auth.ForgotPasswordToken.Errors.Default),
+		ErrResetPassword:     errors.New(translations.Auth.ResetPasswordConfirm.Errors.Default),
+		ErrInvalidToken:      errors.New(translations.Auth.ResetPasswordConfirm.Errors.InvalidToken),
 
 		//User
 		ErrUserNotFound:  errors.New(translations.Users.Errors.NotFound),

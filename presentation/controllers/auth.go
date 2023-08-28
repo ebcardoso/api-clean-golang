@@ -84,3 +84,57 @@ func (c *Auth) Signin(w http.ResponseWriter, r *http.Request) {
 func (c *Auth) CheckToken(w http.ResponseWriter, r *http.Request) {
 
 }
+
+func (c *Auth) ForgotPasswordToken(w http.ResponseWriter, r *http.Request) {
+	output := make(map[string]interface{})
+
+	//Post Params
+	var params requests.ForgotPasswordReq
+	json.NewDecoder(r.Body).Decode(&params)
+
+	err := c.usecase.ForgotPasswordToken(params)
+	if err != nil {
+		var status int
+		if errors.Is(err, c.configs.Exceptions.ErrUserNotFound) {
+			status = http.StatusNotFound
+		} else {
+			status = http.StatusInternalServerError
+		}
+		output["message"] = err.Error()
+		response.JsonRes(w, output, status)
+		return
+	}
+
+	//Success Response
+	output["message"] = c.configs.Translations.Auth.ForgotPasswordToken.Success
+	response.JsonRes(w, output, http.StatusOK)
+}
+
+func (c *Auth) ResetPasswordConfirm(w http.ResponseWriter, r *http.Request) {
+	output := make(map[string]interface{})
+
+	//Post Params
+	var params requests.ResetPasswordReq
+	json.NewDecoder(r.Body).Decode(&params)
+
+	err := c.usecase.ResetPasswordConfirm(params)
+	if err != nil {
+		var status int
+		if errors.Is(err, c.configs.Exceptions.ErrUserNotFound) {
+			status = http.StatusNotFound
+		} else if errors.Is(err, c.configs.Exceptions.ErrDifferentPassword) {
+			status = http.StatusUnprocessableEntity
+		} else if errors.Is(err, c.configs.Exceptions.ErrInvalidToken) {
+			status = http.StatusForbidden
+		} else {
+			status = http.StatusInternalServerError
+		}
+		output["message"] = err.Error()
+		response.JsonRes(w, output, status)
+		return
+	}
+
+	//Success Response
+	output["message"] = c.configs.Translations.Auth.ResetPasswordConfirm.Success
+	response.JsonRes(w, output, http.StatusOK)
+}

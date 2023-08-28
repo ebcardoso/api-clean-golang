@@ -19,7 +19,7 @@ auth:
   reset_password_confirm:
     success: 'Password reset successfully'
     errors:
-      invalid_token: 'Token invalid'
+      invalid_token: 'Invalid token'
       default: 'Failure to reset password'
 users:
   errors:
