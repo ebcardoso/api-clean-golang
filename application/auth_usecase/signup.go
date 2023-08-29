@@ -41,5 +41,5 @@ func (u *authUsecase) Signup(params requests.SignupReq) (entities.User, error) {
 		return entities.User{}, u.configs.Exceptions.ErrSaveUser
 	}
 
-	return result, nil
+	return result.MapUserDB(), nil
 }

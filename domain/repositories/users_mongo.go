@@ -44,13 +44,13 @@ func (rep *usersMongo) ListUsers() ([]entities.User, error) {
 	return items, nil
 }
 
-func (rep *usersMongo) CreateUser(input entities.UserDB) (entities.User, error) {
+func (rep *usersMongo) CreateUser(input entities.UserDB) (entities.UserDB, error) {
 	result, err := rep.collection.InsertOne(context.Background(), input)
 	if err != nil {
-		return entities.User{}, rep.configs.Exceptions.ErrUserCreate
+		return entities.UserDB{}, rep.configs.Exceptions.ErrUserCreate
 	}
 	input.ID = result.InsertedID.(primitive.ObjectID)
-	return input.MapUserDB(), nil
+	return input, nil
 }
 
 func (rep *usersMongo) GetUserByID(id string) (entities.UserDB, error) {
@@ -124,6 +124,30 @@ func (rep *usersMongo) DestroyUser(id string) error {
 		return rep.configs.Exceptions.ErrUserDestroy
 	}
 	if result.DeletedCount == 0 {
+		return rep.configs.Exceptions.ErrUserNotFound
+	}
+	return nil
+}
+
+func (rep *usersMongo) BlockUnblockUser(id string, isBlocked bool) error {
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return rep.configs.Exceptions.ErrParseId
+	}
+
+	object := bson.M{}
+	object["isBlocked"] = isBlocked
+
+	result, err := rep.collection.
+		UpdateOne(context.Background(), bson.M{"_id": objID}, bson.M{"$set": object})
+	if err != nil {
+		if isBlocked {
+			return rep.configs.Exceptions.ErrUserBlock
+		} else {
+			return rep.configs.Exceptions.ErrUserUnblock
+		}
+	}
+	if result.MatchedCount == 0 {
 		return rep.configs.Exceptions.ErrUserNotFound
 	}
 	return nil

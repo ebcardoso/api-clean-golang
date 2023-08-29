@@ -43,6 +43,28 @@ func (c *Users) GetList(w http.ResponseWriter, r *http.Request) {
 	response.JsonRes(w, output, http.StatusOK)
 }
 
+func (c *Users) Create(w http.ResponseWriter, r *http.Request) {
+	output := make(map[string]interface{})
+
+	var params entities.UserDB
+	json.NewDecoder(r.Body).Decode(&params)
+
+	result, err := c.usecase.Create(params)
+	if err != nil {
+		var status int
+		if errors.Is(err, c.configs.Exceptions.ErrUserAlreadyExists) {
+			status = http.StatusUnprocessableEntity
+		} else {
+			status = http.StatusInternalServerError
+		}
+		output["message"] = err.Error()
+		response.JsonRes(w, output, status)
+		return
+	}
+
+	response.JsonRes(w, result.MapUserDB(), http.StatusOK)
+}
+
 func (c *Users) GetByID(w http.ResponseWriter, r *http.Request) {
 	output := make(map[string]interface{})
 
@@ -71,7 +93,7 @@ func (c *Users) Update(w http.ResponseWriter, r *http.Request) {
 
 	id := chi.URLParam(r, "id")
 
-	var params requests.UsersUpdateReq //entities.UserDB
+	var params requests.UsersUpdateReq
 	json.NewDecoder(r.Body).Decode(&params)
 
 	user := entities.UserDB{
