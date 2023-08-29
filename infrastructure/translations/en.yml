@@ -45,4 +45,4 @@ users:
     errors: 'Error to unblock user'
 errors:
   invalid_params: 'Invalid Params'
-  parse_id: 'Invalid param id'
+  parse_id: 'Invalid param :id'

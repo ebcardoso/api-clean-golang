@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/ebcardoso/api-clean-golang/domain/entities"
-	"github.com/ebcardoso/api-clean-golang/domain/repositories"
 	"github.com/ebcardoso/api-clean-golang/presentation/requests"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -18,7 +17,7 @@ func (u *authUsecase) Signup(params requests.SignupReq) (entities.User, error) {
 	//Check if the user already exists
 	_, err := u.repository.GetUserByEmail(params.Email)
 	if err != nil {
-		if errors.Is(err, repositories.ErrUserGet) {
+		if errors.Is(err, u.configs.Exceptions.ErrUserGet) {
 			return entities.User{}, u.configs.Exceptions.ErrSaveUser
 		}
 	} else {

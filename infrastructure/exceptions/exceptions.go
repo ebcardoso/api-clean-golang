@@ -7,6 +7,10 @@ import (
 )
 
 type Exceptions struct {
+	//General
+	ErrParseId       error
+	ErrInvalidParams error
+
 	//Auth
 	ErrWrongPassword     error
 	ErrDifferentPassword error
@@ -31,6 +35,10 @@ type Exceptions struct {
 
 func NewExceptions(translations *translations.Translations) *Exceptions {
 	return &Exceptions{
+		//General
+		ErrParseId:       errors.New(translations.Errors.ParseId),
+		ErrInvalidParams: errors.New(translations.Errors.InvalidParams),
+
 		//Auth
 		ErrWrongPassword:     errors.New(translations.Auth.Signin.Invalid),
 		ErrDifferentPassword: errors.New(translations.Auth.Signup.Errors.PasswordDifferent),

@@ -16,7 +16,7 @@ var (
 
 func GetRoutes(configs *config.Config) *chi.Mux {
 	auth := controllers.NewAuth(configs)
-	// users := controllers.NewUsers(configs)
+	users := controllers.NewUsers(configs)
 
 	router := chi.NewRouter()
 	protector := middlewares.NewRouterProtector(configs)
@@ -26,12 +26,10 @@ func GetRoutes(configs *config.Config) *chi.Mux {
 	router.Group(func(protected chi.Router) {
 		protected.Use(protector.Protect)
 		protected.Post(V1+"auth/check_token", auth.CheckToken)
-		// 	protected.Get(V1+"users", users.GetListUsers)
-		// 	protected.Get(V1+"users/{id}", users.GetUserByID)
-		// 	protected.Patch(V1+"users/{id}", users.UpdateUser)
-		// 	protected.Delete(V1+"users/{id}", users.DestroyUser)
-		// 	protected.Post(V1+"users/{id}/block", users.Block)
-		// 	protected.Post(V1+"users/{id}/unblock", users.Unblock)
+		protected.Get(V1+"users", users.GetList)
+		protected.Get(V1+"users/{id}", users.GetByID)
+		protected.Patch(V1+"users/{id}", users.Update)
+		protected.Delete(V1+"users/{id}", users.Destroy)
 	})
 	router.Post(V1+"auth/signup", auth.Signup)
 	router.Post(V1+"auth/signin", auth.Signin)

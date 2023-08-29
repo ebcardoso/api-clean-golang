@@ -22,12 +22,12 @@ type UserDB struct {
 	Password           string             `bson:"password,omitempty"`
 }
 
-func MapUserDB(user UserDB) User {
+func (u UserDB) MapUserDB() User {
 	return User{
-		ID:        user.ID.Hex(),
-		Name:      user.Name,
-		Email:     user.Email,
-		IsBlocked: user.IsBlocked,
+		ID:        u.ID.Hex(),
+		Name:      u.Name,
+		Email:     u.Email,
+		IsBlocked: u.IsBlocked,
 	}
 }
 

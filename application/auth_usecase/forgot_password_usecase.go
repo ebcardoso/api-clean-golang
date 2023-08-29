@@ -23,7 +23,7 @@ func (u *authUsecase) ForgotPasswordToken(params requests.ForgotPasswordReq) err
 	userWithToken := entities.UserDB{
 		TokenResetPassword: token,
 	}
-	err = u.repository.UpdateUser(user.ID, userWithToken)
+	err = u.repository.UpdateUser(user.ID.Hex(), userWithToken)
 	if err != nil {
 		return u.configs.Exceptions.ErrForgotPassword
 	}

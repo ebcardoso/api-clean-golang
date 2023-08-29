@@ -37,7 +37,7 @@ func (u *authUsecase) ResetPasswordConfirm(params requests.ResetPasswordReq) err
 	}
 
 	// Save User
-	err = u.repository.UpdateUser(user.ID, userPasswordReset)
+	err = u.repository.UpdateUser(user.ID.Hex(), userPasswordReset)
 	if err != nil {
 		return u.configs.Exceptions.ErrResetPassword
 	}
