@@ -10,6 +10,7 @@ import (
 	"github.com/ebcardoso/api-clean-golang/domain/repositories"
 	"github.com/ebcardoso/api-clean-golang/infrastructure/config"
 	"github.com/ebcardoso/api-clean-golang/presentation/requests"
+	"github.com/ebcardoso/api-clean-golang/presentation/requests_contract"
 	"github.com/ebcardoso/api-clean-golang/presentation/response"
 )
 
@@ -30,8 +31,18 @@ func NewAuth(configs *config.Config) *Auth {
 func (c *Auth) Signup(w http.ResponseWriter, r *http.Request) {
 	output := make(map[string]interface{})
 
+	//Post Params
 	var params requests.SignupReq
 	json.NewDecoder(r.Body).Decode(&params)
+
+	//Validating Inputs
+	contract, err := requests_contract.Validate(params)
+	if err != nil {
+		output["message"] = c.configs.Translations.Errors.InvalidParams
+		output["errors"] = contract
+		response.JsonRes(w, output, http.StatusBadRequest)
+		return
+	}
 
 	result, err := c.usecase.Signup(params)
 	if err != nil {
@@ -55,8 +66,18 @@ func (c *Auth) Signup(w http.ResponseWriter, r *http.Request) {
 func (c *Auth) Signin(w http.ResponseWriter, r *http.Request) {
 	output := make(map[string]interface{})
 
+	//Post Params
 	var params requests.SigninReq
 	json.NewDecoder(r.Body).Decode(&params)
+
+	//Validating Inputs
+	contract, err := requests_contract.Validate(params)
+	if err != nil {
+		output["message"] = c.configs.Translations.Errors.InvalidParams
+		output["errors"] = contract
+		response.JsonRes(w, output, http.StatusBadRequest)
+		return
+	}
 
 	token, err := c.usecase.Signin(params)
 	if err != nil {
@@ -77,7 +98,7 @@ func (c *Auth) Signin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	output["message"] = c.configs.Translations.Auth.Signin.Success
-	output["accessToken"] = token
+	output["access_token"] = token
 	response.JsonRes(w, output, http.StatusOK)
 }
 
@@ -92,7 +113,16 @@ func (c *Auth) ForgotPasswordToken(w http.ResponseWriter, r *http.Request) {
 	var params requests.ForgotPasswordReq
 	json.NewDecoder(r.Body).Decode(&params)
 
-	err := c.usecase.ForgotPasswordToken(params)
+	//Validating Inputs
+	contract, err := requests_contract.Validate(params)
+	if err != nil {
+		output["message"] = c.configs.Translations.Errors.InvalidParams
+		output["errors"] = contract
+		response.JsonRes(w, output, http.StatusBadRequest)
+		return
+	}
+
+	err = c.usecase.ForgotPasswordToken(params)
 	if err != nil {
 		var status int
 		if errors.Is(err, c.configs.Exceptions.ErrUserNotFound) {
@@ -117,7 +147,16 @@ func (c *Auth) ResetPasswordConfirm(w http.ResponseWriter, r *http.Request) {
 	var params requests.ResetPasswordReq
 	json.NewDecoder(r.Body).Decode(&params)
 
-	err := c.usecase.ResetPasswordConfirm(params)
+	//Validating Inputs
+	contract, err := requests_contract.Validate(params)
+	if err != nil {
+		output["message"] = c.configs.Translations.Errors.InvalidParams
+		output["errors"] = contract
+		response.JsonRes(w, output, http.StatusBadRequest)
+		return
+	}
+
+	err = c.usecase.ResetPasswordConfirm(params)
 	if err != nil {
 		var status int
 		if errors.Is(err, c.configs.Exceptions.ErrUserNotFound) {
