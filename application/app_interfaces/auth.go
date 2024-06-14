@@ -1,4 +1,4 @@
-package interfaces
+package app_interfaces
 
 import (
 	"github.com/ebcardoso/api-clean-golang/domain/entities"

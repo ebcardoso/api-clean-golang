@@ -1,11 +1,11 @@
-package repositories
+package repository
 
 import (
 	"context"
 	"errors"
 
 	"github.com/ebcardoso/api-clean-golang/domain/entities"
-	"github.com/ebcardoso/api-clean-golang/domain/interfaces"
+	"github.com/ebcardoso/api-clean-golang/domain/repository_interfaces"
 	"github.com/ebcardoso/api-clean-golang/infrastructure/config"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -17,7 +17,7 @@ type usersMongo struct {
 	configs    *config.Config
 }
 
-func NewUsersMongoRepository(configs *config.Config) interfaces.UsersRepository {
+func NewUsersMongoRepository(configs *config.Config) repository_interfaces.UsersRepository {
 	return &usersMongo{
 		collection: configs.Database.Collection("users"),
 		configs:    configs,

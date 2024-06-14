@@ -5,9 +5,10 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/ebcardoso/api-clean-golang/application/app_interfaces"
 	"github.com/ebcardoso/api-clean-golang/application/auth_usecase"
-	"github.com/ebcardoso/api-clean-golang/domain/interfaces"
-	"github.com/ebcardoso/api-clean-golang/domain/repositories"
+	"github.com/ebcardoso/api-clean-golang/domain/repository"
+	"github.com/ebcardoso/api-clean-golang/domain/repository_interfaces"
 	"github.com/ebcardoso/api-clean-golang/infrastructure/config"
 	"github.com/ebcardoso/api-clean-golang/presentation/requests"
 	"github.com/ebcardoso/api-clean-golang/presentation/requests_contract"
@@ -15,14 +16,14 @@ import (
 )
 
 type Auth struct {
-	repository interfaces.UsersRepository
-	usecase    interfaces.AuthUsecase
+	repository repository_interfaces.UsersRepository
+	usecase    app_interfaces.AuthUsecase
 	configs    *config.Config
 }
 
 func NewAuth(configs *config.Config) *Auth {
 	return &Auth{
-		repository: repositories.NewUsersMongoRepository(configs),
+		repository: repository.NewUsersMongoRepository(configs),
 		usecase:    auth_usecase.NewAuthUseCase(configs),
 		configs:    configs,
 	}
