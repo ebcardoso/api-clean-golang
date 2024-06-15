@@ -24,9 +24,7 @@ func NewUsersMongoRepository(configs *config.Config) repository_interfaces.Users
 	}
 }
 
-func (rep *usersMongo) ListUsers() ([]entities.User, error) {
-	items := []entities.User{}
-
+func (rep *usersMongo) ListUsers() ([]entities.UserDB, error) {
 	result, err := rep.collection.Find(context.Background(), bson.M{})
 	if err != nil {
 		return nil, rep.configs.Exceptions.ErrUserList
@@ -34,12 +32,13 @@ func (rep *usersMongo) ListUsers() ([]entities.User, error) {
 
 	defer result.Close(context.Background())
 
+	items := []entities.UserDB{}
 	for result.Next(context.Background()) {
 		var item entities.UserDB
 		if err := result.Decode(&item); err != nil {
 			return nil, rep.configs.Exceptions.ErrUserFetch
 		}
-		items = append(items, item.MapUserDB())
+		items = append(items, item)
 	}
 	return items, nil
 }

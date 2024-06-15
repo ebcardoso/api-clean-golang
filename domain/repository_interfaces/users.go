@@ -5,7 +5,7 @@ import (
 )
 
 type UsersRepository interface {
-	ListUsers() ([]entities.User, error)
+	ListUsers() ([]entities.UserDB, error)
 	CreateUser(input entities.UserDB) (entities.UserDB, error)
 	GetUserByID(id string) (entities.UserDB, error)
 	GetUserByEmail(email string) (entities.UserDB, error)

@@ -5,9 +5,15 @@ import (
 )
 
 func (u *usersUsecase) GetList() ([]entities.User, error) {
-	items, err := u.repository.ListUsers()
+	users, err := u.repository.ListUsers()
 	if err != nil {
 		return nil, err
 	}
+
+	items := []entities.User{}
+	for _, user := range users {
+		items = append(items, user.MapUserDB())
+	}
+
 	return items, err
 }
