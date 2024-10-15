@@ -6,14 +6,6 @@ import (
 )
 
 type User struct {
-	ID        string `json:"id,omitempty"`
-	Name      string `json:"name,omitempty"`
-	Email     string `json:"email,omitempty"`
-	IsBlocked bool   `json:"isBlocked,omitempty"`
-	Password  string `json:"password,omitempty"`
-}
-
-type UserDB struct {
 	ID                 primitive.ObjectID `bson:"_id,omitempty"`
 	Name               string             `bson:"name,omitempty"`
 	Email              string             `bson:"email,omitempty"`
@@ -22,16 +14,7 @@ type UserDB struct {
 	Password           string             `bson:"password,omitempty"`
 }
 
-func (u UserDB) MapUserDB() User {
-	return User{
-		ID:        u.ID.Hex(),
-		Name:      u.Name,
-		Email:     u.Email,
-		IsBlocked: u.IsBlocked,
-	}
-}
-
-func CheckPassword(user UserDB, password string) bool {
+func (user User) CheckPassword(password string) bool {
 	currentPassword := []byte(user.Password)
 	candidate := []byte(password)
 
