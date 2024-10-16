@@ -24,7 +24,7 @@ func NewUsersMongoRepository(configs *config.Config) repository_interfaces.Users
 	}
 }
 
-func (rep *usersMongo) ListUsers() ([]entities.UserDB, error) {
+func (rep *usersMongo) ListUsers() ([]entities.User, error) {
 	result, err := rep.collection.Find(context.Background(), bson.M{})
 	if err != nil {
 		return nil, rep.configs.Exceptions.ErrUserList
@@ -32,9 +32,9 @@ func (rep *usersMongo) ListUsers() ([]entities.UserDB, error) {
 
 	defer result.Close(context.Background())
 
-	items := []entities.UserDB{}
+	items := []entities.User{}
 	for result.Next(context.Background()) {
-		var item entities.UserDB
+		var item entities.User
 		if err := result.Decode(&item); err != nil {
 			return nil, rep.configs.Exceptions.ErrUserFetch
 		}
@@ -43,63 +43,63 @@ func (rep *usersMongo) ListUsers() ([]entities.UserDB, error) {
 	return items, nil
 }
 
-func (rep *usersMongo) CreateUser(input entities.UserDB) (entities.UserDB, error) {
-	result, err := rep.collection.InsertOne(context.Background(), input)
+func (rep *usersMongo) CreateUser(user entities.User) (entities.User, error) {
+	result, err := rep.collection.InsertOne(context.Background(), user)
 	if err != nil {
-		return entities.UserDB{}, rep.configs.Exceptions.ErrUserCreate
+		return entities.User{}, rep.configs.Exceptions.ErrUserCreate
 	}
-	input.ID = result.InsertedID.(primitive.ObjectID)
-	return input, nil
+	user.ID = result.InsertedID.(primitive.ObjectID)
+	return user, nil
 }
 
-func (rep *usersMongo) GetUserByID(id string) (entities.UserDB, error) {
+func (rep *usersMongo) GetUserByID(id string) (entities.User, error) {
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return entities.UserDB{}, rep.configs.Exceptions.ErrParseId
+		return entities.User{}, rep.configs.Exceptions.ErrParseId
 	}
 
-	var result entities.UserDB
+	var result entities.User
 	err = rep.collection.
 		FindOne(context.Background(), bson.M{"_id": objID}).
 		Decode(&result)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			return entities.UserDB{}, rep.configs.Exceptions.ErrUserNotFound
+			return entities.User{}, rep.configs.Exceptions.ErrUserNotFound
 		}
-		return entities.UserDB{}, rep.configs.Exceptions.ErrUserGet
+		return entities.User{}, rep.configs.Exceptions.ErrUserGet
 	}
 	return result, nil
 }
 
-func (rep *usersMongo) GetUserByEmail(email string) (entities.UserDB, error) {
-	var result entities.UserDB
+func (rep *usersMongo) GetUserByEmail(email string) (entities.User, error) {
+	var result entities.User
 	err := rep.collection.
 		FindOne(context.Background(), bson.M{"email": email}).
 		Decode(&result)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			return entities.UserDB{}, rep.configs.Exceptions.ErrUserNotFound
+			return entities.User{}, rep.configs.Exceptions.ErrUserNotFound
 		}
-		return entities.UserDB{}, rep.configs.Exceptions.ErrUserGet
+		return entities.User{}, rep.configs.Exceptions.ErrUserGet
 	}
 	return result, nil
 }
 
-func (rep *usersMongo) UpdateUser(id string, input entities.UserDB) error {
+func (rep *usersMongo) UpdateUser(id string, user entities.User) error {
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return rep.configs.Exceptions.ErrParseId
 	}
 
 	object := bson.M{}
-	if input.Name != "" {
-		object["name"] = input.Name
+	if user.Name != "" {
+		object["name"] = user.Name
 	}
-	if input.TokenResetPassword != "" {
-		object["tokenResetPassword"] = input.TokenResetPassword
+	if user.TokenResetPassword != "" {
+		object["tokenResetPassword"] = user.TokenResetPassword
 	}
-	if input.Password != "" {
-		object["password"] = input.Password
+	if user.Password != "" {
+		object["password"] = user.Password
 	}
 	result, err := rep.collection.
 		UpdateOne(context.Background(), bson.M{"_id": objID}, bson.M{"$set": object})

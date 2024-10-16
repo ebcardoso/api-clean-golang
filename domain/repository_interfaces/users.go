@@ -5,11 +5,11 @@ import (
 )
 
 type UsersRepository interface {
-	ListUsers() ([]entities.UserDB, error)
-	CreateUser(input entities.UserDB) (entities.UserDB, error)
-	GetUserByID(id string) (entities.UserDB, error)
-	GetUserByEmail(email string) (entities.UserDB, error)
-	UpdateUser(id string, input entities.UserDB) error
+	ListUsers() ([]entities.User, error)
+	CreateUser(user entities.User) (entities.User, error)
+	GetUserByID(id string) (entities.User, error)
+	GetUserByEmail(email string) (entities.User, error)
+	UpdateUser(id string, user entities.User) error
 	DestroyUser(id string) error
 	BlockUnblockUser(id string, isBlocked bool) error
 }
