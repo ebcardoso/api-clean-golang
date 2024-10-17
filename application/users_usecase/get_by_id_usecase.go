@@ -1,14 +1,15 @@
 package users_usecase
 
 import (
-	"github.com/ebcardoso/api-clean-golang/domain/entities"
+	"github.com/ebcardoso/api-clean-golang/application/dto"
+	"github.com/ebcardoso/api-clean-golang/infrastructure/services/mappers"
 )
 
-func (u *usersUsecase) GetByID(id string) (entities.UserDB, error) {
+func (u *usersUsecase) GetByID(id string) (dto.UserDTO, error) {
 	result, err := u.repository.GetUserByID(id)
 	if err != nil {
-		return entities.UserDB{}, err
+		return dto.UserDTO{}, err
 	}
 
-	return result, nil
+	return mappers.UserToUserDto(result), nil
 }

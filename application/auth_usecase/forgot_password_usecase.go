@@ -20,7 +20,7 @@ func (u *authUsecase) ForgotPasswordToken(params requests.ForgotPasswordReq) err
 	token := fmt.Sprintf("%d", (100000 + rand.Intn(899999)))
 
 	//Persisting the token
-	userWithToken := entities.UserDB{
+	userWithToken := entities.User{
 		TokenResetPassword: token,
 	}
 	err = u.repository.UpdateUser(user.ID.Hex(), userWithToken)

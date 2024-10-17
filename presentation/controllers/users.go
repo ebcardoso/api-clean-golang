@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/ebcardoso/api-clean-golang/application/app_interfaces"
+	"github.com/ebcardoso/api-clean-golang/application/dto"
 	"github.com/ebcardoso/api-clean-golang/application/users_usecase"
-	"github.com/ebcardoso/api-clean-golang/domain/entities"
 	"github.com/ebcardoso/api-clean-golang/domain/repository"
 	"github.com/ebcardoso/api-clean-golang/domain/repository_interfaces"
 	"github.com/ebcardoso/api-clean-golang/infrastructure/config"
@@ -33,24 +33,24 @@ func NewUsers(configs *config.Config) *Users {
 func (c *Users) GetList(w http.ResponseWriter, r *http.Request) {
 	output := make(map[string]interface{})
 
-	result, err := c.usecase.GetList()
+	users, err := c.usecase.GetList()
 	if err != nil {
 		output["message"] = err.Error()
 		response.JsonRes(w, output, http.StatusInternalServerError)
 		return
 	}
 
-	output["content"] = result
+	output["content"] = users
 	response.JsonRes(w, output, http.StatusOK)
 }
 
 func (c *Users) Create(w http.ResponseWriter, r *http.Request) {
 	output := make(map[string]interface{})
 
-	var params entities.UserDB
+	var params dto.UserDTO
 	json.NewDecoder(r.Body).Decode(&params)
 
-	result, err := c.usecase.Create(params)
+	user, err := c.usecase.Create(params)
 	if err != nil {
 		var status int
 		if errors.Is(err, c.configs.Exceptions.ErrUserAlreadyExists) {
@@ -63,7 +63,7 @@ func (c *Users) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.JsonRes(w, result.MapUserDB(), http.StatusOK)
+	response.JsonRes(w, user, http.StatusOK)
 }
 
 func (c *Users) GetByID(w http.ResponseWriter, r *http.Request) {
@@ -86,7 +86,7 @@ func (c *Users) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.JsonRes(w, user.MapUserDB(), http.StatusOK)
+	response.JsonRes(w, user, http.StatusOK)
 }
 
 func (c *Users) Update(w http.ResponseWriter, r *http.Request) {
@@ -97,7 +97,7 @@ func (c *Users) Update(w http.ResponseWriter, r *http.Request) {
 	var params requests.UsersUpdateReq
 	json.NewDecoder(r.Body).Decode(&params)
 
-	user := entities.UserDB{
+	user := dto.UserDTO{
 		Name: params.Name,
 	}
 
@@ -118,7 +118,7 @@ func (c *Users) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := user.MapUserDB()
+	result := user
 	result.ID = id
 	response.JsonRes(w, result, http.StatusOK)
 }

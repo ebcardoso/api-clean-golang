@@ -1,7 +1,6 @@
 package auth_usecase
 
 import (
-	"github.com/ebcardoso/api-clean-golang/domain/entities"
 	"github.com/ebcardoso/api-clean-golang/infrastructure/services/jwt_parser"
 	"github.com/ebcardoso/api-clean-golang/presentation/requests"
 )
@@ -19,7 +18,7 @@ func (u *authUsecase) Signin(params requests.SigninReq) (string, error) {
 	}
 
 	//Call check password
-	checkPassword := entities.CheckPassword(user, params.Password)
+	checkPassword := user.CheckPassword(params.Password)
 	if !checkPassword {
 		return "", u.configs.Exceptions.ErrWrongPassword
 	}

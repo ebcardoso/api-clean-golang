@@ -1,10 +1,13 @@
 package users_usecase
 
 import (
-	"github.com/ebcardoso/api-clean-golang/domain/entities"
+	"github.com/ebcardoso/api-clean-golang/application/dto"
+	"github.com/ebcardoso/api-clean-golang/infrastructure/services/mappers"
 )
 
-func (u *usersUsecase) Update(id string, user entities.UserDB) error {
+func (u *usersUsecase) Update(id string, userDTO dto.UserDTO) error {
+	user := mappers.UserDtoToUserDb(userDTO)
+
 	err := u.repository.UpdateUser(id, user)
 	if err != nil {
 		return err

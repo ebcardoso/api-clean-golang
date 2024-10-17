@@ -31,7 +31,7 @@ func (u *authUsecase) ResetPasswordConfirm(params requests.ResetPasswordReq) err
 	}
 
 	// User Object
-	userPasswordReset := entities.UserDB{
+	userPasswordReset := entities.User{
 		TokenResetPassword: "@-@-@-@",
 		Password:           string(encryptedPassword[:]),
 	}
